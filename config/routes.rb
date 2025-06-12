@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
   # Authentication routes
   get "login", to: "sessions#new"
-  post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+  
+  # OIDC routes
+  get "/auth/:provider/callback", to: "sessions#omniauth_callback"
+  get "/auth/failure", to: "sessions#omniauth_failure"
   
   # Main application routes
   root "schedules#index"

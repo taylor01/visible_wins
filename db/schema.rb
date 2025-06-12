@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_11_204958) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_12_161842) do
   create_table "teams", force: :cascade do |t|
     t.string "name"
     t.integer "parent_id"
@@ -28,6 +28,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_204958) do
     t.boolean "admin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "okta_sub"
+    t.string "employee_id"
+    t.string "phone_number"
+    t.string "title"
+    t.string "department"
+    t.string "office_location"
+    t.string "manager_email"
+    t.date "hire_date"
+    t.string "employee_type"
+    t.boolean "active", default: true
+    t.index ["active"], name: "index_users_on_active"
+    t.index ["department"], name: "index_users_on_department"
+    t.index ["employee_id"], name: "index_users_on_employee_id", unique: true
+    t.index ["manager_email"], name: "index_users_on_manager_email"
+    t.index ["okta_sub"], name: "index_users_on_okta_sub", unique: true
     t.index ["team_id"], name: "index_users_on_team_id"
   end
 
