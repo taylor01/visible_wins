@@ -1,0 +1,11 @@
+development:
+  name: Development Team
+
+operations:
+  name: Operations Team
+
+design:
+  name: Design Team
+
+empty_team:
+  name: Empty Team

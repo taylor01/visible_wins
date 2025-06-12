@@ -1,0 +1,21 @@
+alice_current_week:
+  user: alice
+  week_start_date: <%= Date.current.beginning_of_week(:sunday) %>
+  sunday: off
+  monday: in_office
+  tuesday: remote
+  wednesday: in_office
+  thursday: remote
+  friday: in_office
+  saturday: off
+
+bob_current_week:
+  user: bob
+  week_start_date: <%= Date.current.beginning_of_week(:sunday) %>
+  sunday: off
+  monday: remote
+  tuesday: in_office
+  wednesday: remote
+  thursday: in_office
+  friday: remote
+  saturday: off

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Visible Wins" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50">
+    <% if logged_in? %>
+      <nav class="bg-white shadow-sm">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 justify-between">
+            <div class="flex">
+              <div class="flex flex-shrink-0 items-center">
+                <%= link_to root_path, class: "text-xl font-bold text-gray-900" do %>
+                  Visible Wins
+                <% end %>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="hidden md:ml-6 md:flex md:items-center md:space-x-4">
+                <%= link_to "Schedule", root_path, class: "text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" %>
+                <% if current_user.admin? %>
+                  <%= link_to "Admin", admin_users_path, class: "text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" %>
+                <% end %>
+              </div>
+              <div class="ml-6 flex items-center">
+                <span class="text-sm text-gray-700 mr-4">
+                  Welcome, <%= current_user.first_name %>!
+                </span>
+                <%= link_to "Update My Schedule", edit_schedule_path(current_user, week_start_date: params[:week_start_date]), class: "bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 mr-2" %>
+                <%= link_to "Logout", logout_path, method: :delete, class: "text-gray-700 hover:text-gray-900 text-sm font-medium" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <% if notice %>
+      <div class="bg-green-50 border border-green-200 rounded-md p-4 mx-4 mt-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-green-800"><%= notice %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4 mx-4 mt-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-800"><%= alert %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <main class="<%= logged_in? ? 'py-8' : '' %>">
+      <%= yield %>
+    </main>
+  </body>
+</html>
