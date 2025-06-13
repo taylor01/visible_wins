@@ -15,7 +15,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index when logged in" do
-    log_in_as(@user)
+    sign_in_as(@user)
     get root_path
     assert_response :success
     assert_select "h1", "Team Schedule"
@@ -23,7 +23,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show current week by default" do
-    log_in_as(@user)
+    sign_in_as(@user)
     get root_path
     assert_response :success
     current_week = Date.current.beginning_of_week(:sunday)
@@ -32,14 +32,14 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should filter by team" do
-    log_in_as(@user)
+    sign_in_as(@user)
     get root_path(team_id: @team.id)
     assert_response :success
     assert_select "option[selected]", text: @team.name
   end
 
   test "should navigate to different week" do
-    log_in_as(@user)
+    sign_in_as(@user)
     next_week = @week_start + 1.week
     get root_path(week_start_date: next_week)
     assert_response :success
@@ -48,7 +48,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit for current user" do
-    log_in_as(@user)
+    sign_in_as(@user)
     get edit_schedule_path(@user)
     assert_response :success
     assert_select "h1", "Update My Schedule"
@@ -56,13 +56,13 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
 
   test "should not allow editing other user's schedule" do
     other_user = users(:bob)
-    log_in_as(@user)
+    sign_in_as(@user)
     get edit_schedule_path(other_user)
     assert_response :redirect
   end
 
   test "should update schedule" do
-    log_in_as(@user)
+    sign_in_as(@user)
     patch schedule_path(@user), params: {
       weekly_schedule: {
         sunday: "Office",
@@ -79,7 +79,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should handle invalid schedule update" do
-    log_in_as(@user)
+    sign_in_as(@user)
     patch schedule_path(@user), params: {
       weekly_schedule: {
         sunday: "invalid_status"
@@ -89,18 +89,9 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should preserve team filter in week navigation links" do
-    log_in_as(@user)
+    sign_in_as(@user)
     get root_path(team_id: @team.id)
     assert_response :success
     assert_select "a[href*='team_id=#{@team.id}']"
-  end
-
-  private
-
-  def log_in_as(user)
-    post login_path, params: { 
-      email: user.email, 
-      password: "password" 
-    }
   end
 end

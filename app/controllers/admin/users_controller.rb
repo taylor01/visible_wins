@@ -53,6 +53,6 @@ class Admin::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email, :role, :team_id, :admin, :password)
+    params.require(:user).permit(:first_name, :last_name, :email, :okta_sub, :role, :team_id, :admin, :active)
   end
 end

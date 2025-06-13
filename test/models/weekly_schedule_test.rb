@@ -7,9 +7,10 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_weekly_schedule_user",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     @sunday = Date.parse("2024-01-07") # A Sunday
   end
@@ -66,7 +67,8 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       email: "jane@example.com",
       role: "Manager",
       team: @team,
-      password: "password"
+      okta_sub: "test_jane_weekly_schedule",
+      active: true
     )
     
     WeeklySchedule.create!(
@@ -142,7 +144,8 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       email: "jane@example.com",
       role: "Manager",
       team: @team,
-      password: "password"
+      okta_sub: "test_jane_weekly_schedule",
+      active: true
     )
     WeeklySchedule.create!(
       user: user2,

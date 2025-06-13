@@ -79,9 +79,10 @@ class TeamTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe", 
       email: "john@example.com",
+      okta_sub: "test_john_team",
       role: "Staff",
       team: team,
-      password: "password"
+      active: true
     )
     
     assert_not team.destroy

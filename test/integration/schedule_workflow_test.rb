@@ -9,12 +9,8 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
 
   test "complete schedule management workflow" do
     # User logs in
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
-    assert_redirected_to root_path
-    follow_redirect!
+    sign_in_as(@user)
+    get root_path
 
     # User views schedule page
     assert_response :success
@@ -61,12 +57,8 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
 
   test "admin user management workflow" do
     # Admin logs in
-    post login_path, params: {
-      email: @admin_user.email,
-      password: "password"
-    }
-    assert_redirected_to root_path
-    follow_redirect!
+    sign_in_as(@admin_user)
+    get root_path
 
     # Admin accesses admin panel
     get admin_users_path
@@ -92,10 +84,7 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
 
     # Login as regular user
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
+    sign_in_as(@user)
 
     # Try to access admin areas as regular user
     get admin_users_path
@@ -107,10 +96,7 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
 
   test "week navigation preserves filters" do
     # Login
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
+    sign_in_as(@user)
 
     # Navigate to filtered view
     get root_path(team_id: @team.id)
@@ -122,10 +108,7 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
 
   test "schedule validation and error handling" do
     # Login
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
+    sign_in_as(@user)
 
     # Try to update with invalid data
     patch schedule_path(@user), params: {

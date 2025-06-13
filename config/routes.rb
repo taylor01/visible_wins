@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
   # Authentication routes
   get "login", to: "sessions#new"
-  post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+  get "logout", to: "sessions#destroy"  # Allow GET for easier testing
+  
+  # OIDC routes
+  get "/auth/:provider/callback", to: "sessions#omniauth_callback"
+  get "/auth/failure", to: "sessions#omniauth_failure"
+  
+  # Test-only route for simulating login
+  if Rails.env.test?
+    post "/test_login", to: "sessions#test_login"
+  end
   
   # Main application routes
   root "schedules#index"
