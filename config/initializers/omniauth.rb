@@ -1,3 +1,5 @@
+redirect_uri = ENV["OKTA_REDIRECT_URI"] || "http://localhost:3000/auth/okta/callback"
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :openid_connect, {
     name: :okta,
@@ -7,11 +9,11 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     client_id: ENV["OKTA_CLIENT_ID"],
     client_secret: ENV["OKTA_CLIENT_SECRET"],
     uid_field: :sub,
-    redirect_uri: "http://localhost:3000/auth/okta/callback",
+    redirect_uri: redirect_uri,
     client_options: {
       identifier: ENV["OKTA_CLIENT_ID"],
       secret: ENV["OKTA_CLIENT_SECRET"],
-      redirect_uri: "http://localhost:3000/auth/okta/callback",
+      redirect_uri: redirect_uri,
       port: 443,
       scheme: "https",
       host: "hendrick.okta.com"
