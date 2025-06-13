@@ -23,6 +23,7 @@ env:
     - KAMAL_REGISTRY_PASSWORD
     - OKTA_CLIENT_ID
     - OKTA_ISSUER_URL
+    - OKTA_REDIRECT_URI 
   clear:
     SOLID_QUEUE_IN_PUMA: true
     RAILS_LOG_TO_STDOUT: "true"
