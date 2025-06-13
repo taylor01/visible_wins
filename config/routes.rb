@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # Profile routes
+  get "profile", to: "profile#show"
+  get "profile/edit", to: "profile#edit"
+  patch "profile", to: "profile#update"
+  
   # Authentication routes
   get "login", to: "sessions#new"
   delete "logout", to: "sessions#destroy"
