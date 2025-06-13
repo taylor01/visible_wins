@@ -67,7 +67,8 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       email: "jane@example.com",
       role: "Manager",
       team: @team,
-      password: "password"
+      okta_sub: "test_jane_weekly_schedule",
+      active: true
     )
     
     WeeklySchedule.create!(
@@ -143,7 +144,8 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       email: "jane@example.com",
       role: "Manager",
       team: @team,
-      password: "password"
+      okta_sub: "test_jane_weekly_schedule",
+      active: true
     )
     WeeklySchedule.create!(
       user: user2,
