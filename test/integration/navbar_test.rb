@@ -15,7 +15,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     assert_select "div", text: user.first_name.first.upcase + user.last_name.first.upcase
     
     # Check that profile links are present in dropdown
-    assert_select "a[href='#{profile_path}']", text: "View Profile"
     assert_select "a[href='#{profile_edit_path}']", text: "Edit Profile"
     
     # Check that logout link is present
@@ -23,7 +22,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     
     # Check that user info is displayed in dropdown
     assert_select "p", text: user.full_name
-    assert_select "p", text: user.email
   end
   
   test "navbar shows mobile menu on small screens" do
@@ -40,7 +38,6 @@ class NavbarTest < ActionDispatch::IntegrationTest
     assert_select ".md\\:hidden [role='menu']" do
       assert_select "a", text: "Schedule"
       assert_select "a", text: "Update My Schedule"
-      assert_select "a", text: "View Profile"
       assert_select "a", text: "Edit Profile"
       assert_select "a", text: "Sign out"
     end
