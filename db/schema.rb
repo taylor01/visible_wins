@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_12_161842) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_012323) do
   create_table "teams", force: :cascade do |t|
     t.string "name"
     t.integer "parent_id"
@@ -38,6 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_12_161842) do
     t.date "hire_date"
     t.string "employee_type"
     t.boolean "active", default: true
+    t.datetime "profile_completed_at"
     t.index ["active"], name: "index_users_on_active"
     t.index ["department"], name: "index_users_on_department"
     t.index ["employee_id"], name: "index_users_on_employee_id", unique: true

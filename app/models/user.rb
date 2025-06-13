@@ -104,6 +104,15 @@ class User < ApplicationRecord
     user
   end
 
+  # Profile completion tracking
+  def profile_completed?
+    profile_completed_at.present?
+  end
+
+  def needs_profile_completion?
+    !profile_completed?
+  end
+
   private
 
   def self.parse_hire_date(date_string)
