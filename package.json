@@ -1,0 +1,27 @@
+{
+  "name": "visible_wins",
+  "version": "1.0.0",
+  "description": "Team schedule tracking application",
+  "scripts": {
+    "check": "bin/dev-check",
+    "lint": "bundle exec rubocop",
+    "lint:fix": "bundle exec rubocop -a",
+    "security": "bundle exec brakeman --no-pager",
+    "security:js": "bin/importmap audit",
+    "test": "bin/rails test",
+    "test:system": "bin/rails test:system",
+    "ci": "npm run security && npm run security:js && npm run lint && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taylor01/visible_wins.git"
+  },
+  "keywords": [
+    "rails",
+    "schedule",
+    "team",
+    "management"
+  ],
+  "author": "IT Team",
+  "license": "MIT"
+}

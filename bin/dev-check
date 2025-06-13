@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Development check script - runs the same checks as CI locally
+puts "🚀 Running development checks (same as CI)..."
+
+def run_command(name, command, description)
+  puts "\n#{name} #{description}..."
+  result = system(command)
+  if result
+    puts "✅ #{name} passed"
+  else
+    puts "❌ #{name} failed"
+    exit(1)
+  end
+end
+
+# Security scan
+run_command("🛡️  Brakeman", "bundle exec brakeman --no-pager", "security scan")
+
+# JavaScript security scan  
+run_command("🔍 Importmap", "bin/importmap audit", "JavaScript security audit")
+
+# Lint check
+run_command("📏 RuboCop", "bundle exec rubocop -f progress", "code style check")
+
+# Full test suite
+run_command("🧪 Tests", "bin/rails test", "full test suite")
+
+puts "\n🎉 All checks passed! Ready to commit and push."
+puts "💡 These are the same checks that run in GitHub Actions CI."
