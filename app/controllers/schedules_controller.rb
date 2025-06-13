@@ -14,14 +14,13 @@ class SchedulesController < ApplicationController
     @previous_week = @current_week_start - 1.week
     @next_week = @current_week_start + 1.week
     
-    # Get users based on team filter
-    users_scope = User.includes(:team, :weekly_schedules).by_name
+    # Get users with team preloaded
+    users_scope = User.includes(:team).by_name
     users_scope = users_scope.where(team: @selected_team) if @selected_team
     @users = users_scope
     
-    # Get schedules for current week
-    @schedules = WeeklySchedule.includes(:user)
-                               .where(user: @users, week_start_date: @current_week_start)
+    # Single query to get all schedules for current week
+    @schedules = WeeklySchedule.where(user_id: @users.pluck(:id), week_start_date: @current_week_start)
                                .index_by(&:user_id)
   end
 
