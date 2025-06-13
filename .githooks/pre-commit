@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Pre-commit hook that runs security and lint checks
+# To install: git config core.hooksPath .githooks
+#
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if we're in a Rails project
+if [ ! -f "Gemfile" ]; then
+  echo "❌ Not a Rails project, skipping checks"
+  exit 0
+fi
+
+# Run RuboCop for code style (auto-fix mode)
+echo "📏 Running RuboCop..."
+if ! bundle exec rubocop -a --display-cop-names; then
+  echo "❌ RuboCop failed. Some issues couldn't be auto-fixed."
+  echo "💡 Run 'bundle exec rubocop' to see remaining issues."
+  exit 1
+fi
+
+# Run Brakeman for security
+echo "🛡️  Running Brakeman security scan..."
+if ! bundle exec brakeman --no-pager --quiet; then
+  echo "❌ Security vulnerabilities found! Please fix before committing."
+  echo "💡 Run 'bin/brakeman --no-pager' for details."
+  exit 1
+fi
+
+# Run a quick smoke test (not full suite to keep commits fast)
+echo "🧪 Running quick tests..."
+if ! bundle exec ruby -Itest test/models/user_test.rb; then
+  echo "❌ Quick tests failed! Run full test suite with 'bin/rails test'"
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"

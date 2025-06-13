@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "shopify.ruby-lsp",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+    "rebornix.ruby",
+    "koichisasada.vscode-rdbg",
+    "castwide.solargraph"
+  ],
+  "unwantedRecommendations": [
+    "ms-python.python"
+  ]
+}
