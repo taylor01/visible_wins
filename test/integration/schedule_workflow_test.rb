@@ -39,12 +39,12 @@ class ScheduleWorkflowTest < ActionDispatch::IntegrationTest
 
     # Verify schedule was updated
     assert_match "Schedule updated successfully!", flash[:notice]
-    
+
     # User navigates to next week
     next_week = Date.current.beginning_of_week(:sunday) + 1.week
     get root_path(week_start_date: next_week)
     assert_response :success
-    
+
     # User filters by team
     get root_path(team_id: @team.id)
     assert_response :success

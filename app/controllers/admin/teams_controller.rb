@@ -1,6 +1,6 @@
 class Admin::TeamsController < ApplicationController
   before_action :require_admin
-  before_action :set_team, only: [:show, :edit, :update, :destroy]
+  before_action :set_team, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @teams = Team.all.order(:name)
@@ -16,7 +16,7 @@ class Admin::TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
     if @team.save
-      redirect_to admin_teams_path, notice: 'Team was successfully created.'
+      redirect_to admin_teams_path, notice: "Team was successfully created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class Admin::TeamsController < ApplicationController
 
   def update
     if @team.update(team_params)
-      redirect_to admin_teams_path, notice: 'Team was successfully updated.'
+      redirect_to admin_teams_path, notice: "Team was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,9 +35,9 @@ class Admin::TeamsController < ApplicationController
 
   def destroy
     if @team.destroy
-      redirect_to admin_teams_path, notice: 'Team was successfully deleted.'
+      redirect_to admin_teams_path, notice: "Team was successfully deleted."
     else
-      redirect_to admin_teams_path, alert: 'Cannot delete team with users.'
+      redirect_to admin_teams_path, alert: "Cannot delete team with users."
     end
   end
 

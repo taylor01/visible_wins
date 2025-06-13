@@ -27,7 +27,7 @@ class Admin::TeamsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create team" do
     sign_in_as(@admin)
-    assert_difference('Team.count') do
+    assert_difference("Team.count") do
       post admin_teams_path, params: { team: { name: Faker::Company.name } }
     end
     assert_redirected_to admin_teams_path
@@ -47,7 +47,7 @@ class Admin::TeamsControllerTest < ActionDispatch::IntegrationTest
 
   test "should destroy team" do
     sign_in_as(@admin)
-    assert_difference('Team.count', -1) do
+    assert_difference("Team.count", -1) do
       delete admin_team_path(@empty_team)
     end
     assert_redirected_to admin_teams_path

@@ -3,27 +3,27 @@ Rails.application.routes.draw do
   get "profile", to: "profile#show"
   get "profile/edit", to: "profile#edit"
   patch "profile", to: "profile#update"
-  
+
   # Authentication routes
   get "login", to: "sessions#new"
   delete "logout", to: "sessions#destroy"
   get "logout", to: "sessions#destroy"  # Allow GET for easier testing
-  
+
   # OIDC routes
   get "/auth/:provider/callback", to: "sessions#omniauth_callback"
   get "/auth/failure", to: "sessions#omniauth_failure"
-  
+
   # Test-only route for simulating login
   if Rails.env.test?
     post "/test_login", to: "sessions#test_login"
   end
-  
+
   # Main application routes
   root "schedules#index"
-  
+
   # Schedule management
-  resources :schedules, only: [:index, :edit, :update]
-  
+  resources :schedules, only: [ :index, :edit, :update ]
+
   # Admin routes
   namespace :admin do
     resources :users

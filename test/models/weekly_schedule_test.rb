@@ -50,7 +50,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       week_start_date: @sunday,
       monday: "Office"
     )
-    
+
     duplicate_schedule = WeeklySchedule.new(
       user: @user,
       week_start_date: @sunday,
@@ -70,13 +70,13 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       okta_sub: "test_jane_weekly_schedule",
       active: true
     )
-    
+
     WeeklySchedule.create!(
       user: @user,
       week_start_date: @sunday,
       monday: "Office"
     )
-    
+
     schedule2 = WeeklySchedule.new(
       user: user2,
       week_start_date: @sunday,
@@ -136,7 +136,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       week_start_date: @sunday,
       monday: "Office"
     )
-    
+
     next_week = @sunday + 7.days
     user2 = User.create!(
       first_name: "Jane",
@@ -152,7 +152,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       week_start_date: next_week,
       monday: "WFH"
     )
-    
+
     schedules = WeeklySchedule.for_week(@sunday)
     assert_equal 1, schedules.count
     assert_includes schedules, schedule1
@@ -165,7 +165,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       week_start_date: current_week_start,
       monday: "Office"
     )
-    
+
     current_schedules = WeeklySchedule.current_week
     assert_includes current_schedules, schedule
   end
@@ -181,7 +181,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       week_start_date: @sunday - 7.days,
       monday: "Office"
     )
-    
+
     ordered_schedules = WeeklySchedule.where(user: @user).ordered
     assert_equal schedule1, ordered_schedules.first
     assert_equal schedule2, ordered_schedules.last
@@ -200,7 +200,7 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       monday: "Office",
       tuesday: "WFH"
     )
-    
+
     assert_equal "Office", schedule.status_for_day("Monday")
     assert_equal "WFH", schedule.status_for_day("Tuesday")
     assert_nil schedule.status_for_day("Wednesday")
@@ -211,10 +211,10 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       user: @user,
       week_start_date: @sunday
     )
-    
+
     schedule.set_status_for_day("Monday", "Office")
     schedule.set_status_for_day("Tuesday", "WFH")
-    
+
     assert_equal "Office", schedule.monday
     assert_equal "WFH", schedule.tuesday
   end

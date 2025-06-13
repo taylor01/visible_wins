@@ -63,7 +63,7 @@ end
 # Create sample schedules for current week
 current_week_start = Date.current.beginning_of_week(:sunday)
 
-[john, jane, bob].each do |user|
+[ john, jane, bob ].each do |user|
   WeeklySchedule.find_or_create_by!(user: user, week_start_date: current_week_start) do |schedule|
     schedule.monday = "Office"
     schedule.tuesday = "WFH"

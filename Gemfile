@@ -22,7 +22,7 @@ gem "jbuilder"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
-# OIDC Authentication  
+# OIDC Authentication
 gem "omniauth", "~> 2.0"
 gem "omniauth_openid_connect"
 gem "omniauth-rails_csrf_protection"
@@ -59,7 +59,7 @@ group :development, :test do
 
   # Generate fake data for testing [https://github.com/faker-ruby/faker]
   gem "faker"
-  
+
   # Load environment variables from .env file
   gem "dotenv-rails"
 end

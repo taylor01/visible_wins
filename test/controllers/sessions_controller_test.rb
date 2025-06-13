@@ -32,7 +32,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should logout user" do
     # Login user first
     sign_in_as(@user)
-    
+
     # Then logout
     delete logout_path
     assert_redirected_to login_path
@@ -46,7 +46,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect logged in user away from login page" do
     # Login user first
     sign_in_as(@user)
-    
+
     # Try to access login page again
     get login_path
     assert_redirected_to root_path

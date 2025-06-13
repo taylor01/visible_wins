@@ -1,0 +1,1 @@
+- always run the tests before you generate the PR
