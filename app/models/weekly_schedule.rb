@@ -5,7 +5,7 @@ class WeeklySchedule < ApplicationRecord
 
   validates :week_start_date, presence: true, uniqueness: { scope: :user_id }
   validates :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday,
-            inclusion: { in: SCHEDULE_OPTIONS + [nil, ""] }, allow_blank: true
+            inclusion: { in: SCHEDULE_OPTIONS + [ nil, "" ] }, allow_blank: true
 
   validate :week_start_date_is_sunday
 
@@ -33,7 +33,7 @@ class WeeklySchedule < ApplicationRecord
 
   def week_start_date_is_sunday
     return unless week_start_date.present?
-    
+
     errors.add(:week_start_date, "must be a Sunday") unless week_start_date.sunday?
   end
 end

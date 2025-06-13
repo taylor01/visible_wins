@@ -3,7 +3,7 @@ class AddOidcFieldsToUsers < ActiveRecord::Migration[8.0]
     # OIDC/Okta specific fields
     add_column :users, :okta_sub, :string
     add_index :users, :okta_sub, unique: true
-    
+
     # Extended user attributes from Okta
     add_column :users, :employee_id, :string
     add_index :users, :employee_id, unique: true
@@ -15,7 +15,7 @@ class AddOidcFieldsToUsers < ActiveRecord::Migration[8.0]
     add_column :users, :hire_date, :date
     add_column :users, :employee_type, :string
     add_column :users, :active, :boolean, default: true
-    
+
     # Additional indexes for lookups
     add_index :users, :manager_email
     add_index :users, :department

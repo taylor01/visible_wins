@@ -68,7 +68,7 @@ class UserTest < ActiveSupport::TestCase
       team: @team,
       active: true
     )
-    
+
     duplicate_user = User.new(
       first_name: "Jane",
       last_name: "Smith",
@@ -187,7 +187,7 @@ class UserTest < ActiveSupport::TestCase
       first_name: "Bob", last_name: "Apple",
       email: Faker::Internet.unique.email, okta_sub: "test_bob_apple", role: "Staff", team: @team, active: true
     )
-    
+
     ordered_users = User.by_name
     assert_equal "Apple", ordered_users.first.last_name
     assert_equal "Bob", ordered_users.first.first_name
@@ -205,7 +205,7 @@ class UserTest < ActiveSupport::TestCase
       email: Faker::Internet.unique.email, okta_sub: "test_staff", role: "Staff", team: @team,
       active: true, admin: false
     )
-    
+
     admins = User.admins
     assert_includes admins, admin
     assert admins.count >= 1  # Account for fixture admin user
@@ -216,14 +216,14 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John", last_name: "Doe",
       email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
     )
-    
+
     current_week_start = Date.current.beginning_of_week(:sunday)
     schedule = WeeklySchedule.create!(
       user: user,
       week_start_date: current_week_start,
       monday: "Office"
     )
-    
+
     assert_equal schedule, user.current_week_schedule
   end
 
@@ -232,7 +232,7 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John", last_name: "Doe",
       email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
     )
-    
+
     specific_date = Date.parse("2024-01-15") # A Monday
     week_start = specific_date.beginning_of_week(:sunday)
     schedule = WeeklySchedule.create!(
@@ -240,7 +240,7 @@ class UserTest < ActiveSupport::TestCase
       week_start_date: week_start,
       monday: "WFH"
     )
-    
+
     assert_equal schedule, user.schedule_for_week(specific_date)
   end
 end

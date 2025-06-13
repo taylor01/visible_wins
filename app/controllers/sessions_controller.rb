@@ -1,17 +1,25 @@
 class SessionsController < ApplicationController
   skip_before_action :require_login
-  
+
   def new
     redirect_to root_path if logged_in?
   end
 
   # OIDC callback handler
   def omniauth_callback
-    auth_data = request.env['omniauth.auth']
-    
+    auth_data = request.env["omniauth.auth"]
+
+    # DEBUG: Log all OIDC claims for debugging
+    Rails.logger.info "=== OIDC CLAIMS DEBUG ==="
+    Rails.logger.info "auth_data.info: #{auth_data.info.to_hash}"
+    Rails.logger.info "auth_data.extra: #{auth_data.extra.to_hash}"
+    Rails.logger.info "auth_data.credentials: #{auth_data.credentials.to_hash}"
+    Rails.logger.info "Full auth_data: #{auth_data.to_hash}"
+    Rails.logger.info "=========================="
+
     # Find existing user by Okta sub or create new one
     user = User.find_by(okta_sub: auth_data.uid)
-    
+
     if user
       # Update existing user with latest Okta data
       user = User.update_from_okta(user, auth_data)
@@ -19,7 +27,7 @@ class SessionsController < ApplicationController
       # Create new user from Okta data
       user = User.create_from_okta(auth_data)
     end
-    
+
     if user.active?
       session[:user_id] = user.id
       redirect_to root_path, notice: "Welcome, #{user.first_name}!"
@@ -45,9 +53,9 @@ class SessionsController < ApplicationController
   # Test-only method for simulating login
   def test_login
     return head :not_found unless Rails.env.test?
-    
+
     user_id = params[:user_id]
-    if user_id && User.exists?(user_id)
+    if user_id && User.exists?(id: user_id)
       session[:user_id] = user_id.to_i
       head :ok
     else

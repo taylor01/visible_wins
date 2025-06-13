@@ -133,23 +133,23 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
   test "should update schedule for specified week" do
     sign_in_as(@user)
     next_week = @week_start + 1.week
-    
+
     patch schedule_path(@user), params: {
       weekly_schedule: {
         week_start_date: next_week,
         sunday: "Office",
         monday: "WFH",
-        tuesday: "Office", 
+        tuesday: "Office",
         wednesday: "WFH",
         thursday: "Office",
         friday: "WFH",
         saturday: "OOO"
       }
     }
-    
+
     assert_redirected_to root_path
     assert_match "Schedule updated successfully!", flash[:notice]
-    
+
     # Verify the schedule was created for the correct week
     schedule = @user.weekly_schedules.find_by(week_start_date: next_week)
     assert_not_nil schedule

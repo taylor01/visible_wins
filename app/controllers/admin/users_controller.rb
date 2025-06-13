@@ -1,6 +1,6 @@
 class Admin::UsersController < ApplicationController
   before_action :require_admin
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @users = User.includes(:team).by_name
@@ -17,7 +17,7 @@ class Admin::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @teams = Team.all.order(:name)
-    
+
     if @user.save
       redirect_to admin_users_path, notice: "User created successfully!"
     else
@@ -53,6 +53,10 @@ class Admin::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :email, :okta_sub, :role, :team_id, :admin, :active)
+    # Only allow admin role assignment if current user is admin
+    permitted_params = [ :first_name, :last_name, :email, :okta_sub, :role, :team_id, :active ]
+    permitted_params << :admin if current_user&.admin?
+
+    params.require(:user).permit(permitted_params)
   end
 end

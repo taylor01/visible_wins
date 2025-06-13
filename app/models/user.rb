@@ -8,7 +8,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :role, presence: true, inclusion: { in: %w[Executive Director Manager Staff] }
-  validates :active, inclusion: { in: [true, false] }
+  validates :active, inclusion: { in: [ true, false ] }
 
   scope :by_name, -> { order(:last_name, :first_name) }
   scope :admins, -> { where(admin: true) }
@@ -57,7 +57,7 @@ class User < ApplicationRecord
       email: user_info.email,
       first_name: user_info.given_name || user_info.first_name,
       last_name: user_info.family_name || user_info.last_name,
-      
+
       # Extended attributes from Okta
       employee_id: extra_data&.dig(:employee_number),
       phone_number: extra_data&.dig(:phone_number),
@@ -67,7 +67,7 @@ class User < ApplicationRecord
       manager_email: extra_data&.dig(:manager),
       hire_date: parse_hire_date(extra_data&.dig(:hire_date)),
       employee_type: extra_data&.dig(:employee_type),
-      
+
       # Role and team assignment
       role: map_title_to_role(extra_data&.dig(:title)),
       admin: admin_from_groups(extra_data&.dig(:groups)),
@@ -84,7 +84,7 @@ class User < ApplicationRecord
       email: user_info.email,
       first_name: user_info.given_name || user_info.first_name,
       last_name: user_info.family_name || user_info.last_name,
-      
+
       # Update extended attributes
       employee_id: extra_data&.dig(:employee_number),
       phone_number: extra_data&.dig(:phone_number),
@@ -94,13 +94,13 @@ class User < ApplicationRecord
       manager_email: extra_data&.dig(:manager),
       hire_date: parse_hire_date(extra_data&.dig(:hire_date)),
       employee_type: extra_data&.dig(:employee_type),
-      
+
       # Update role and admin status
       role: map_title_to_role(extra_data&.dig(:title)),
       admin: admin_from_groups(extra_data&.dig(:groups)),
       team: assign_team_from_attributes(extra_data)
     )
-    
+
     user
   end
 
@@ -124,7 +124,7 @@ class User < ApplicationRecord
 
   def self.map_title_to_role(title)
     return "Staff" if title.blank?
-    
+
     case title.downcase
     when /director|vp|vice president|chief/ then "Executive"
     when /manager|lead|principal|supervisor/ then "Manager"
@@ -135,14 +135,14 @@ class User < ApplicationRecord
 
   def self.admin_from_groups(groups)
     return false if groups.blank?
-    
-    admin_groups = ["IT-Admins", "IT-Managers", "Administrators"]
+
+    admin_groups = [ "IT-Admins", "IT-Managers", "Administrators" ]
     admin_groups.any? { |group| groups.include?(group) }
   end
 
   def self.assign_team_from_attributes(extra_data)
     return Team.first if extra_data.blank?
-    
+
     # Priority 1: Direct group mapping
     team_mapping = {
       "IT-Development" => "Development Team",
@@ -150,19 +150,19 @@ class User < ApplicationRecord
       "IT-Security" => "Security Team",
       "IT-Support" => "Support Team"
     }
-    
+
     if extra_data[:groups]
       team_groups = extra_data[:groups] & team_mapping.keys
       team = Team.find_by(name: team_mapping[team_groups.first]) if team_groups.any?
       return team if team
     end
-    
+
     # Priority 2: Department mapping
     if extra_data[:department]
       team = Team.find_by(name: "#{extra_data[:department]} Team")
       return team if team
     end
-    
+
     # Fallback: First available team
     Team.first
   end

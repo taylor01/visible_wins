@@ -27,17 +27,17 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create user" do
     sign_in_as(@admin)
-    assert_difference('User.count') do
-      post admin_users_path, params: { 
-        user: { 
-          first_name: Faker::Name.first_name, 
-          last_name: Faker::Name.last_name, 
-          email: Faker::Internet.unique.email, 
-          okta_sub: Faker::Alphanumeric.alpha(number: 20), 
+    assert_difference("User.count") do
+      post admin_users_path, params: {
+        user: {
+          first_name: Faker::Name.first_name,
+          last_name: Faker::Name.last_name,
+          email: Faker::Internet.unique.email,
+          okta_sub: Faker::Alphanumeric.alpha(number: 20),
           role: "Staff",
           team_id: @team.id,
           active: true
-        } 
+        }
       }
     end
     assert_redirected_to admin_users_path
@@ -51,21 +51,20 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should update user" do
     sign_in_as(@admin)
-    patch admin_user_path(@user), params: { 
-      user: { 
+    patch admin_user_path(@user), params: {
+      user: {
         first_name: Faker::Name.first_name,
         role: "Manager"
-      } 
+      }
     }
     assert_redirected_to admin_users_path
   end
 
   test "should destroy user" do
     sign_in_as(@admin)
-    assert_difference('User.count', -1) do
+    assert_difference("User.count", -1) do
       delete admin_user_path(@user)
     end
     assert_redirected_to admin_users_path
   end
-
 end

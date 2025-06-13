@@ -20,7 +20,7 @@ module ActionDispatch
     def sign_in_as(user)
       post "/test_login", params: { user_id: user.id }
     end
-    
+
     # Helper method to simulate logout
     def sign_out
       delete logout_path

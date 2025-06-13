@@ -32,7 +32,7 @@ class TeamTest < ActiveSupport::TestCase
     parent = Team.create!(name: "Information Technology")
     child1 = Team.create!(name: "Engineering", parent_team: parent)
     child2 = Team.create!(name: "Support", parent_team: parent)
-    
+
     assert_includes parent.child_teams, child1
     assert_includes parent.child_teams, child2
     assert_equal 2, parent.child_teams.count
@@ -42,7 +42,7 @@ class TeamTest < ActiveSupport::TestCase
     parent = Team.create!(name: "Information Technology")
     child = Team.create!(name: "Engineering", parent_team: parent)
     grandchild = Team.create!(name: "Network Engineering", parent_team: child)
-    
+
     assert_equal "Information Technology", parent.full_name
     assert_equal "Information Technology → Engineering", child.full_name
     assert_equal "Information Technology → Engineering → Network Engineering", grandchild.full_name
@@ -53,7 +53,7 @@ class TeamTest < ActiveSupport::TestCase
     parent = Team.create!(name: Faker::Company.name)
     Team.create!(name: Faker::Company.name, parent_team: parent)
     orphan = Team.create!(name: Faker::Company.name)
-    
+
     top_level_teams = Team.top_level
     assert_includes top_level_teams, parent
     assert_includes top_level_teams, orphan
@@ -65,7 +65,7 @@ class TeamTest < ActiveSupport::TestCase
     eng = Team.create!(name: Faker::Company.name, parent_team: it)
     net = Team.create!(name: Faker::Company.name, parent_team: eng)
     sys = Team.create!(name: Faker::Company.name, parent_team: eng)
-    
+
     descendants = it.all_descendants
     assert_includes descendants, eng
     assert_includes descendants, net
@@ -77,14 +77,14 @@ class TeamTest < ActiveSupport::TestCase
     team = Team.create!(name: "Engineering")
     user = User.create!(
       first_name: "John",
-      last_name: "Doe", 
+      last_name: "Doe",
       email: "john@example.com",
       okta_sub: "test_john_team",
       role: "Staff",
       team: team,
       active: true
     )
-    
+
     assert_not team.destroy
     assert team.errors.present?
   end
@@ -92,7 +92,7 @@ class TeamTest < ActiveSupport::TestCase
   test "should restrict deletion when child teams exist" do
     parent = Team.create!(name: "Information Technology")
     Team.create!(name: "Engineering", parent_team: parent)
-    
+
     assert_not parent.destroy
     assert parent.errors.present?
   end
