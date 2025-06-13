@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # Authentication routes
   get "login", to: "sessions#new"
   delete "logout", to: "sessions#destroy"
+  get "logout", to: "sessions#destroy"  # Allow GET for easier testing
   
   # OIDC routes
   get "/auth/:provider/callback", to: "sessions#omniauth_callback"
