@@ -41,4 +41,17 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to login_path, notice: "You have been logged out"
   end
+
+  # Test-only method for simulating login
+  def test_login
+    return head :not_found unless Rails.env.test?
+    
+    user_id = params[:user_id]
+    if user_id && User.exists?(user_id)
+      session[:user_id] = user_id.to_i
+      head :ok
+    else
+      head :unprocessable_entity
+    end
+  end
 end

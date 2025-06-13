@@ -7,9 +7,10 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_weekly_schedule_user",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     @sunday = Date.parse("2024-01-07") # A Sunday
   end

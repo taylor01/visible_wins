@@ -2,25 +2,28 @@ alice:
   first_name: Alice
   last_name: Johnson
   email: alice@example.com
-  password_digest: <%= BCrypt::Password.create('password') %>
+  okta_sub: alice_test_sub_123
   role: developer
   admin: false
+  active: true
   team: development
 
 bob:
   first_name: Bob
   last_name: Smith
   email: bob@example.com
-  password_digest: <%= BCrypt::Password.create('password') %>
+  okta_sub: bob_test_sub_456
   role: developer
   admin: false
+  active: true
   team: development
 
 admin:
   first_name: Admin
   last_name: User
   email: admin@example.com
-  password_digest: <%= BCrypt::Password.create('password') %>
+  okta_sub: admin_test_sub_789
   role: manager
   admin: true
+  active: true
   team: development

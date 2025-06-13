@@ -10,9 +10,10 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     assert user.valid?
     assert user.save
@@ -22,9 +23,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:first_name].present?
@@ -34,9 +36,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(
       first_name: "John",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:last_name].present?
@@ -46,9 +49,10 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(
       first_name: "John",
       last_name: "Doe",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:email].present?
@@ -59,18 +63,20 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     
     duplicate_user = User.new(
       first_name: "Jane",
       last_name: "Smith",
       email: "john@example.com",
+      okta_sub: "test_sub_456",
       role: "Manager",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not duplicate_user.valid?
     assert duplicate_user.errors[:email].present?
@@ -81,9 +87,10 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "invalid-email",
+      okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:email].present?
@@ -94,8 +101,9 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:role].present?
@@ -106,9 +114,10 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "InvalidRole",
       team: @team,
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:role].present?
@@ -120,9 +129,10 @@ class UserTest < ActiveSupport::TestCase
         first_name: "John",
         last_name: "Doe",
         email: "john-#{role.downcase}@example.com",
+        okta_sub: "test_sub_#{role.downcase}",
         role: role,
         team: @team,
-        password: "password"
+        active: true
       )
       assert user.valid?, "#{role} should be a valid role"
     end
@@ -133,24 +143,25 @@ class UserTest < ActiveSupport::TestCase
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
+      okta_sub: "test_sub_123",
       role: "Staff",
-      password: "password"
+      active: true
     )
     assert_not user.valid?
     assert user.errors[:team].present?
   end
 
-  test "should have secure password" do
-    user = User.create!(
+  test "should require okta_sub for OIDC authentication" do
+    user = User.new(
       first_name: "John",
       last_name: "Doe",
       email: "john@example.com",
       role: "Staff",
       team: @team,
-      password: "password"
+      active: true
     )
-    assert user.authenticate("password")
-    assert_not user.authenticate("wrong_password")
+    assert_not user.valid?
+    assert user.errors[:okta_sub].present?
   end
 
   test "full_name should combine first and last name" do
@@ -166,15 +177,15 @@ class UserTest < ActiveSupport::TestCase
   test "by_name scope should order by last name then first name" do
     User.create!(
       first_name: Faker::Name.first_name, last_name: "Zebra",
-      email: Faker::Internet.unique.email, role: "Staff", team: @team, password: "password"
+      email: Faker::Internet.unique.email, okta_sub: "test_zebra", role: "Staff", team: @team, active: true
     )
     User.create!(
       first_name: Faker::Name.first_name, last_name: "Apple",
-      email: Faker::Internet.unique.email, role: "Staff", team: @team, password: "password"
+      email: Faker::Internet.unique.email, okta_sub: "test_apple", role: "Staff", team: @team, active: true
     )
     User.create!(
       first_name: "Bob", last_name: "Apple",
-      email: Faker::Internet.unique.email, role: "Staff", team: @team, password: "password"
+      email: Faker::Internet.unique.email, okta_sub: "test_bob_apple", role: "Staff", team: @team, active: true
     )
     
     ordered_users = User.by_name
@@ -186,13 +197,13 @@ class UserTest < ActiveSupport::TestCase
   test "admins scope should return only admin users" do
     admin = User.create!(
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
-      email: Faker::Internet.unique.email, role: "Executive", team: @team,
-      password: "password", admin: true
+      email: Faker::Internet.unique.email, okta_sub: "test_admin", role: "Executive", team: @team,
+      active: true, admin: true
     )
     User.create!(
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
-      email: Faker::Internet.unique.email, role: "Staff", team: @team,
-      password: "password", admin: false
+      email: Faker::Internet.unique.email, okta_sub: "test_staff", role: "Staff", team: @team,
+      active: true, admin: false
     )
     
     admins = User.admins
@@ -203,7 +214,7 @@ class UserTest < ActiveSupport::TestCase
   test "current_week_schedule should return schedule for current week" do
     user = User.create!(
       first_name: "John", last_name: "Doe",
-      email: "john@example.com", role: "Staff", team: @team, password: "password"
+      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
     )
     
     current_week_start = Date.current.beginning_of_week(:sunday)
@@ -219,7 +230,7 @@ class UserTest < ActiveSupport::TestCase
   test "schedule_for_week should return schedule for specific week" do
     user = User.create!(
       first_name: "John", last_name: "Doe",
-      email: "john@example.com", role: "Staff", team: @team, password: "password"
+      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
     )
     
     specific_date = Date.parse("2024-01-15") # A Monday

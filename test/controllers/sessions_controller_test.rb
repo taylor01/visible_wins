@@ -9,46 +9,59 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get login_path
     assert_response :success
     assert_select "h2", "Sign in to Visible Wins"
-    assert_select "form"
+    assert_select "a[href*='auth/okta']", "Sign in with Okta"
   end
 
-  test "should login with valid credentials" do
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
+  test "should handle OIDC callback with valid user" do
+    # Simulate successful OIDC callback
+    auth_data = {
+      'uid' => @user.okta_sub,
+      'info' => {
+        'email' => @user.email,
+        'given_name' => @user.first_name,
+        'family_name' => @user.last_name
+      }
     }
+    
+    request.env['omniauth.auth'] = OmniAuth::AuthHash.new(auth_data)
+    get "/auth/okta/callback"
+    
     assert_redirected_to root_path
     assert_equal @user.id, session[:user_id]
   end
 
-  test "should not login with invalid email" do
-    post login_path, params: {
-      email: "invalid@example.com",
-      password: "password"
+  test "should handle OIDC callback with new user" do
+    # Simulate OIDC callback for new user
+    auth_data = {
+      'uid' => 'new_user_sub_123',
+      'info' => {
+        'email' => 'newuser@example.com',
+        'given_name' => 'New',
+        'family_name' => 'User'
+      }
     }
-    assert_response :unprocessable_entity
-    assert_select "p", "Invalid email or password"
-    assert_nil session[:user_id]
+    
+    request.env['omniauth.auth'] = OmniAuth::AuthHash.new(auth_data)
+    
+    assert_difference 'User.count', 1 do
+      get "/auth/okta/callback"
+    end
+    
+    new_user = User.find_by(okta_sub: 'new_user_sub_123')
+    assert_not_nil new_user
+    assert_equal 'newuser@example.com', new_user.email
   end
 
-  test "should not login with invalid password" do
-    post login_path, params: {
-      email: @user.email,
-      password: "wrongpassword"
-    }
-    assert_response :unprocessable_entity
-    assert_select "p", "Invalid email or password"
+  test "should handle OIDC failure" do
+    get "/auth/okta/failure", params: { message: "invalid_credentials" }
+    assert_redirected_to login_path
     assert_nil session[:user_id]
   end
 
   test "should logout user" do
-    # First login
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
-    assert_equal @user.id, session[:user_id]
-
+    # Simulate logged in user
+    session[:user_id] = @user.id
+    
     # Then logout
     delete logout_path
     assert_redirected_to login_path
@@ -61,11 +74,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should redirect logged in user away from login page" do
-    # Login first
-    post login_path, params: {
-      email: @user.email,
-      password: "password"
-    }
+    # Simulate logged in user
+    session[:user_id] = @user.id
     
     # Try to access login page again
     get login_path

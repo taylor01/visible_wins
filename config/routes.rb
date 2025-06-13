@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "sessions#omniauth_callback"
   get "/auth/failure", to: "sessions#omniauth_failure"
   
+  # Test-only route for simulating login
+  if Rails.env.test?
+    post "/test_login", to: "sessions#test_login"
+  end
+  
   # Main application routes
   root "schedules#index"
   
