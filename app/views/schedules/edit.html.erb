@@ -1,9 +1,32 @@
 <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+  <!-- Header with Week Navigation -->
   <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">Update My Schedule</h1>
-    <p class="mt-1 text-sm text-gray-600">
-      Week of <%= @week_start_date.strftime("%B %d, %Y") %>
-    </p>
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Update My Schedule</h1>
+        <p class="mt-1 text-sm text-gray-600">
+          <%= @week_start_date.strftime("%B %d") %> - <%= (@week_start_date + 6.days).strftime("%B %d, %Y") %>
+        </p>
+      </div>
+      
+      <!-- Week Navigator -->
+      <div class="flex items-center space-x-2">
+        <% current_week = Date.current.beginning_of_week(:sunday) %>
+        <% next_week = current_week + 1.week %>
+        
+        <!-- Current Week Button -->
+        <%= link_to edit_schedule_path(@user, week_start_date: current_week), 
+              class: "px-3 py-2 text-sm font-medium rounded-md transition-colors #{'bg-blue-100 text-blue-700' if @week_start_date == current_week} #{'text-gray-600 hover:text-gray-900 hover:bg-gray-100' if @week_start_date != current_week}" do %>
+          This Week
+        <% end %>
+        
+        <!-- Next Week Button -->
+        <%= link_to edit_schedule_path(@user, week_start_date: next_week), 
+              class: "px-3 py-2 text-sm font-medium rounded-md transition-colors #{'bg-blue-100 text-blue-700' if @week_start_date == next_week} #{'text-gray-600 hover:text-gray-900 hover:bg-gray-100' if @week_start_date != next_week}" do %>
+          Next Week
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <div class="bg-white shadow-sm ring-1 ring-gray-900/5 rounded-lg p-6">

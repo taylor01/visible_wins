@@ -65,6 +65,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
     patch schedule_path(@user), params: {
       weekly_schedule: {
+        week_start_date: @week_start,
         sunday: "Office",
         monday: "WFH",
         tuesday: "Office",
@@ -82,6 +83,7 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
     patch schedule_path(@user), params: {
       weekly_schedule: {
+        week_start_date: @week_start,
         sunday: "invalid_status"
       }
     }
@@ -93,5 +95,65 @@ class SchedulesControllerTest < ActionDispatch::IntegrationTest
     get root_path(team_id: @team.id)
     assert_response :success
     assert_select "a[href*='team_id=#{@team.id}']"
+  end
+
+  test "should default to current week before Thursday" do
+    sign_in_as(@user)
+    # Mock Date.current to be a Wednesday
+    travel_to Date.new(2025, 1, 15) do # Wednesday
+      get edit_schedule_path(@user)
+      assert_response :success
+      # Should show current week (January 12 - January 18, 2025)
+      assert_select "p", text: "January 12 - January 18, 2025"
+    end
+  end
+
+  test "should default to next week on Thursday or later" do
+    sign_in_as(@user)
+    # Mock Date.current to be a Thursday
+    travel_to Date.new(2025, 1, 16) do # Thursday
+      get edit_schedule_path(@user)
+      assert_response :success
+      # Should show next week (January 19 - January 25, 2025)
+      assert_select "p", text: "January 19 - January 25, 2025"
+    end
+  end
+
+  test "should allow explicit week selection regardless of day" do
+    sign_in_as(@user)
+    specific_week = Date.new(2025, 2, 2) # Future Sunday
+    travel_to Date.new(2025, 1, 16) do # Thursday
+      get edit_schedule_path(@user, week_start_date: specific_week)
+      assert_response :success
+      # Should show specified week (February 02 - February 08, 2025)
+      assert_select "p", text: "February 02 - February 08, 2025"
+    end
+  end
+
+  test "should update schedule for specified week" do
+    sign_in_as(@user)
+    next_week = @week_start + 1.week
+    
+    patch schedule_path(@user), params: {
+      weekly_schedule: {
+        week_start_date: next_week,
+        sunday: "Office",
+        monday: "WFH",
+        tuesday: "Office", 
+        wednesday: "WFH",
+        thursday: "Office",
+        friday: "WFH",
+        saturday: "OOO"
+      }
+    }
+    
+    assert_redirected_to root_path
+    assert_match "Schedule updated successfully!", flash[:notice]
+    
+    # Verify the schedule was created for the correct week
+    schedule = @user.weekly_schedules.find_by(week_start_date: next_week)
+    assert_not_nil schedule
+    assert_equal "Office", schedule.sunday
+    assert_equal "WFH", schedule.monday
   end
 end

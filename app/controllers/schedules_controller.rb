@@ -28,7 +28,15 @@ class SchedulesController < ApplicationController
     @user = User.find(params[:id])
     redirect_to root_path and return unless @user == current_user
     
-    @week_start_date = params[:week_start_date]&.to_date || Date.current.beginning_of_week(:sunday)
+    # Default to next week if it's Thursday or later and no specific week is requested
+    if params[:week_start_date].present?
+      @week_start_date = params[:week_start_date].to_date
+    elsif Date.current.wday >= 4 # Thursday (4) or later
+      @week_start_date = Date.current.beginning_of_week(:sunday) + 1.week
+    else
+      @week_start_date = Date.current.beginning_of_week(:sunday)
+    end
+    
     @schedule = @user.weekly_schedules.find_or_initialize_by(week_start_date: @week_start_date)
     @schedule_options = WeeklySchedule::SCHEDULE_OPTIONS
   end
@@ -37,7 +45,13 @@ class SchedulesController < ApplicationController
     @user = User.find(params[:id])
     redirect_to root_path and return unless @user == current_user
     
-    @week_start_date = params[:week_start_date]&.to_date || Date.current.beginning_of_week(:sunday)
+    # Get week_start_date from the form's hidden field or fallback to current week
+    if params[:weekly_schedule]&.[](:week_start_date).present?
+      @week_start_date = params[:weekly_schedule][:week_start_date].to_date
+    else
+      @week_start_date = Date.current.beginning_of_week(:sunday)
+    end
+    
     @schedule = @user.weekly_schedules.find_or_initialize_by(week_start_date: @week_start_date)
     
     if @schedule.update(schedule_params)
@@ -51,6 +65,6 @@ class SchedulesController < ApplicationController
   private
 
   def schedule_params
-    params.require(:weekly_schedule).permit(:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday)
+    params.require(:weekly_schedule).permit(:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :week_start_date)
   end
 end

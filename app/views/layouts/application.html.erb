@@ -40,7 +40,7 @@
                 <% if current_user.admin? %>
                   <%= link_to "Admin", admin_users_path, class: "text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" %>
                 <% end %>
-                <%= link_to "Update My Schedule", edit_schedule_path(current_user, week_start_date: params[:week_start_date]), class: "bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700" %>
+                <%= link_to "Update My Schedule", edit_schedule_path(current_user), class: "bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700" %>
               </div>
               
               <!-- Mobile menu button -->
@@ -72,7 +72,7 @@
                     
                     <!-- Mobile navigation links -->
                     <%= link_to "Schedule", root_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" %>
-                    <%= link_to "Update My Schedule", edit_schedule_path(current_user, week_start_date: params[:week_start_date]), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" %>
+                    <%= link_to "Update My Schedule", edit_schedule_path(current_user), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" %>
                     <% if current_user.admin? %>
                       <%= link_to "Admin", admin_users_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100", role: "menuitem" %>
                     <% end %>
