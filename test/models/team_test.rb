@@ -82,7 +82,8 @@ class TeamTest < ActiveSupport::TestCase
       okta_sub: "test_john_team",
       role: "Staff",
       team: team,
-      active: true
+      active: true,
+      profile_completed_at: 1.week.ago
     )
 
     assert_not team.destroy

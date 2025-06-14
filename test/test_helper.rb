@@ -11,6 +11,14 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
+    # Helper method to create user with completed profile
+    def create_user_with_completed_profile(attributes = {})
+      default_attributes = {
+        profile_completed_at: 1.week.ago
+      }
+      User.create!(default_attributes.merge(attributes))
+    end
   end
 end
 

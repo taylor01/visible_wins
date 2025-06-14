@@ -7,6 +7,7 @@ alice:
   admin: false
   active: true
   team: development
+  profile_completed_at: <%= 1.week.ago %>
 
 bob:
   first_name: Bob
@@ -17,6 +18,7 @@ bob:
   admin: false
   active: true
   team: development
+  profile_completed_at: <%= 1.week.ago %>
 
 admin:
   first_name: Admin
@@ -27,3 +29,4 @@ admin:
   admin: true
   active: true
   team: development
+  profile_completed_at: <%= 1.week.ago %>
