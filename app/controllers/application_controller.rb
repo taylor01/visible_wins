@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :require_login
+  before_action :require_profile_completion
 
   private
 
@@ -29,5 +30,15 @@ class ApplicationController < ActionController::Base
 
   def require_admin
     redirect_to root_path unless current_user&.admin?
+  end
+
+  def require_profile_completion
+    return unless logged_in?
+    return if current_user.profile_completed?
+
+    # Allow access to profile routes and logout
+    return if controller_name == "profile" || controller_name == "sessions"
+
+    redirect_to profile_edit_path
   end
 end

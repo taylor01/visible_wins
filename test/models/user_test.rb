@@ -66,7 +66,8 @@ class UserTest < ActiveSupport::TestCase
       okta_sub: "test_sub_123",
       role: "Staff",
       team: @team,
-      active: true
+      active: true,
+      profile_completed_at: 1.week.ago
     )
 
     duplicate_user = User.new(
@@ -177,15 +178,18 @@ class UserTest < ActiveSupport::TestCase
   test "by_name scope should order by last name then first name" do
     User.create!(
       first_name: "Zoe", last_name: "Zebra",
-      email: Faker::Internet.unique.email, okta_sub: "test_zebra", role: "Staff", team: @team, active: true
+      email: Faker::Internet.unique.email, okta_sub: "test_zebra", role: "Staff", team: @team, active: true,
+      profile_completed_at: 1.week.ago
     )
     User.create!(
       first_name: "Charlie", last_name: "Apple",
-      email: Faker::Internet.unique.email, okta_sub: "test_apple", role: "Staff", team: @team, active: true
+      email: Faker::Internet.unique.email, okta_sub: "test_apple", role: "Staff", team: @team, active: true,
+      profile_completed_at: 1.week.ago
     )
     User.create!(
       first_name: "Bob", last_name: "Apple",
-      email: Faker::Internet.unique.email, okta_sub: "test_bob_apple", role: "Staff", team: @team, active: true
+      email: Faker::Internet.unique.email, okta_sub: "test_bob_apple", role: "Staff", team: @team, active: true,
+      profile_completed_at: 1.week.ago
     )
 
     ordered_users = User.by_name
@@ -206,12 +210,12 @@ class UserTest < ActiveSupport::TestCase
     admin = User.create!(
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
       email: Faker::Internet.unique.email, okta_sub: "test_admin", role: "Executive", team: @team,
-      active: true, admin: true
+      active: true, admin: true, profile_completed_at: 1.week.ago
     )
     User.create!(
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
       email: Faker::Internet.unique.email, okta_sub: "test_staff", role: "Staff", team: @team,
-      active: true, admin: false
+      active: true, admin: false, profile_completed_at: 1.week.ago
     )
 
     admins = User.admins
@@ -222,7 +226,8 @@ class UserTest < ActiveSupport::TestCase
   test "current_week_schedule should return schedule for current week" do
     user = User.create!(
       first_name: "John", last_name: "Doe",
-      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
+      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true,
+      profile_completed_at: 1.week.ago
     )
 
     current_week_start = Date.current.beginning_of_week(:sunday)
@@ -238,7 +243,8 @@ class UserTest < ActiveSupport::TestCase
   test "schedule_for_week should return schedule for specific week" do
     user = User.create!(
       first_name: "John", last_name: "Doe",
-      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true
+      email: "john@example.com", okta_sub: "test_john", role: "Staff", team: @team, active: true,
+      profile_completed_at: 1.week.ago
     )
 
     specific_date = Date.parse("2024-01-15") # A Monday
