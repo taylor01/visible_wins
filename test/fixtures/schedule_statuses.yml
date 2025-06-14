@@ -1,0 +1,50 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+office:
+  name: Office
+  display_name: Office
+  color_class: bg-blue-100 text-blue-800
+  active: true
+  sort_order: 1
+
+wfh:
+  name: WFH
+  display_name: WFH
+  color_class: bg-green-100 text-green-800
+  active: true
+  sort_order: 2
+
+vacation:
+  name: Vacation
+  display_name: Vacation
+  color_class: bg-purple-100 text-purple-800
+  active: true
+  sort_order: 3
+
+ooo:
+  name: OOO
+  display_name: OOO
+  color_class: bg-red-100 text-red-800
+  active: true
+  sort_order: 4
+
+travel:
+  name: Travel
+  display_name: Travel
+  color_class: bg-yellow-100 text-yellow-800
+  active: true
+  sort_order: 5
+
+tbd:
+  name: TBD
+  display_name: TBD
+  color_class: bg-gray-100 text-gray-800
+  active: true
+  sort_order: 6
+
+inactive_status:
+  name: Inactive
+  display_name: Inactive Status
+  color_class: bg-gray-100 text-gray-500
+  active: false
+  sort_order: 99

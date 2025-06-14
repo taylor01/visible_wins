@@ -26,8 +26,10 @@ Rails.application.routes.draw do
 
   # Admin routes
   namespace :admin do
+    root "dashboard#index"
     resources :users
     resources :teams
+    resources :schedule_statuses
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

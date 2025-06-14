@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_13_012323) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_13_231632) do
+  create_table "schedule_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "display_name", null: false
+    t.string "color_class", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "sort_order", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_schedule_statuses_on_name", unique: true
+    t.index ["sort_order"], name: "index_schedule_statuses_on_sort_order"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.string "name"
     t.integer "parent_id"

@@ -1,11 +1,12 @@
 class WeeklySchedule < ApplicationRecord
   belongs_to :user
 
+  # Keep the constant for backward compatibility during transition
   SCHEDULE_OPTIONS = %w[Office WFH Vacation OOO TBD Travel].freeze
 
   validates :week_start_date, presence: true, uniqueness: { scope: :user_id }
   validates :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday,
-            inclusion: { in: SCHEDULE_OPTIONS + [ nil, "" ] }, allow_blank: true
+            inclusion: { in: -> (_) { valid_schedule_options } }, allow_blank: true
 
   validate :week_start_date_is_sunday
 
@@ -29,7 +30,26 @@ class WeeklySchedule < ApplicationRecord
     week_start_date.strftime("%B %d, %Y")
   end
 
+  # Class method to get valid schedule options from database
+  def self.valid_schedule_options
+    @valid_schedule_options ||= ScheduleStatus.active.pluck(:name) + [nil, ""]
+  end
+
+  # Method to get schedule options for forms
+  def self.schedule_options_for_select
+    ScheduleStatus.options_for_select
+  end
+
+  # Clear the cache when schedule statuses change
+  def self.clear_schedule_options_cache
+    @valid_schedule_options = nil
+  end
+
   private
+
+  def valid_schedule_options
+    self.class.valid_schedule_options
+  end
 
   def week_start_date_is_sunday
     return unless week_start_date.present?

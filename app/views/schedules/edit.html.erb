@@ -60,7 +60,7 @@
           <div>
             <%= form.label day, day.capitalize, class: "block text-sm font-medium text-gray-700 mb-2" %>
             <%= form.select day, 
-                  options_for_select([["", ""]] + @schedule_options.map { |opt| [opt, opt] }, @schedule.send(day)),
+                  options_for_select([["", ""]] + @schedule_options, @schedule.send(day)),
                   {},
                   { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" } %>
           </div>
@@ -79,7 +79,7 @@
     <h3 class="text-sm font-medium text-gray-900 mb-3">Status Options</h3>
     <div class="flex flex-wrap gap-3">
       <% @schedule_options.each do |option| %>
-        <%= render 'status_badge', status: option %>
+        <%= render 'status_badge', status: option.last %>
       <% end %>
     </div>
   </div>
