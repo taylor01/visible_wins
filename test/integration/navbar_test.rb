@@ -51,10 +51,10 @@ class NavbarTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # Check admin link is present in desktop nav
-    assert_select ".hidden.md\\:flex a[href='#{admin_users_path}']", text: "Admin"
+    assert_select ".hidden.md\\:flex a[href='#{admin_root_path}']", text: "Admin"
 
     # Check admin link is present in mobile nav
-    assert_select ".md\\:hidden a[href='#{admin_users_path}']", text: "Admin"
+    assert_select ".md\\:hidden a[href='#{admin_root_path}']", text: "Admin"
   end
 
   test "navbar does not show admin link for regular users" do

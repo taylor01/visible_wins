@@ -19,29 +19,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get new" do
-    sign_in_as(@admin)
-    get new_admin_user_path
-    assert_response :success
-  end
-
-  test "should create user" do
-    sign_in_as(@admin)
-    assert_difference("User.count") do
-      post admin_users_path, params: {
-        user: {
-          first_name: Faker::Name.first_name,
-          last_name: Faker::Name.last_name,
-          email: Faker::Internet.unique.email,
-          okta_sub: Faker::Alphanumeric.alpha(number: 20),
-          role: "Staff",
-          team_id: @team.id,
-          active: true
-        }
-      }
-    end
-    assert_redirected_to admin_users_path
-  end
 
   test "should get edit" do
     sign_in_as(@admin)
@@ -53,11 +30,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@admin)
     patch admin_user_path(@user), params: {
       user: {
-        first_name: Faker::Name.first_name,
-        role: "Manager"
+        role: "Manager",
+        team_id: @team.id,
+        active: false
       }
     }
     assert_redirected_to admin_users_path
+    @user.reload
+    assert_equal "Manager", @user.role
+    assert_equal @team.id, @user.team_id
+    assert_equal false, @user.active
   end
 
   test "should destroy user" do

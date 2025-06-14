@@ -6,7 +6,7 @@ class WeeklySchedule < ApplicationRecord
 
   validates :week_start_date, presence: true, uniqueness: { scope: :user_id }
   validates :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday,
-            inclusion: { in: -> (_) { valid_schedule_options } }, allow_blank: true
+            inclusion: { in: ->(_) { valid_schedule_options } }, allow_blank: true
 
   validate :week_start_date_is_sunday
 
@@ -32,7 +32,7 @@ class WeeklySchedule < ApplicationRecord
 
   # Class method to get valid schedule options from database
   def self.valid_schedule_options
-    @valid_schedule_options ||= ScheduleStatus.active.pluck(:name) + [nil, ""]
+    @valid_schedule_options ||= ScheduleStatus.active.pluck(:name) + [ nil, "" ]
   end
 
   # Method to get schedule options for forms

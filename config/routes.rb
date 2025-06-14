@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   # Admin routes
   namespace :admin do
     root "dashboard#index"
-    resources :users
+    resources :users, except: [ :new, :create ]
     resources :teams
     resources :schedule_statuses
   end

@@ -233,16 +233,16 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
   test "valid_schedule_options should return active schedule statuses plus blank options" do
     valid_options = WeeklySchedule.valid_schedule_options
     active_status_names = ScheduleStatus.active.pluck(:name)
-    
+
     # Should include all active status names
     active_status_names.each do |name|
       assert_includes valid_options, name
     end
-    
+
     # Should include nil and empty string
     assert_includes valid_options, nil
     assert_includes valid_options, ""
-    
+
     # Should not include inactive status
     assert_not_includes valid_options, "Inactive"
   end
@@ -251,20 +251,20 @@ class WeeklyScheduleTest < ActiveSupport::TestCase
     options = WeeklySchedule.schedule_options_for_select
     assert options.is_a?(Array)
     assert options.all? { |option| option.is_a?(Array) && option.size == 2 }
-    
+
     # Should include active statuses only
     office_option = options.find { |display_name, name| name == "Office" }
     assert_not_nil office_option
-    assert_equal ["Office", "Office"], office_option
+    assert_equal [ "Office", "Office" ], office_option
   end
 
   test "clear_schedule_options_cache should clear cached options" do
     # Access the cached value
     WeeklySchedule.valid_schedule_options
-    
+
     # Clear the cache
     WeeklySchedule.clear_schedule_options_cache
-    
+
     # The cache should be cleared (can't easily test the internal state, but this ensures no errors)
     new_options = WeeklySchedule.valid_schedule_options
     assert new_options.is_a?(Array)

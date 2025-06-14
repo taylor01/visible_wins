@@ -54,22 +54,22 @@ class ScheduleStatusTest < ActiveSupport::TestCase
     options = ScheduleStatus.options_for_select
     assert options.is_a?(Array)
     assert options.all? { |option| option.is_a?(Array) && option.size == 2 }
-    
+
     # Should not include inactive status
     inactive_option = options.find { |display_name, name| name == "Inactive" }
     assert_nil inactive_option
-    
+
     # Should include active statuses
     office_option = options.find { |display_name, name| name == "Office" }
     assert_not_nil office_option
-    assert_equal ["Office", "Office"], office_option
+    assert_equal [ "Office", "Office" ], office_option
   end
 
   test "find_by_name should find status by name" do
     status = ScheduleStatus.find_by_name("Office")
     assert_not_nil status
     assert_equal "Office", status.name
-    
+
     nil_status = ScheduleStatus.find_by_name("NonExistent")
     assert_nil nil_status
   end
