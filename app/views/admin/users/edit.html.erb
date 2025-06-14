@@ -1,4 +1,148 @@
-<div>
-  <h1 class="font-bold text-4xl">Admin::Users#edit</h1>
-  <p>Find me in app/views/admin/users/edit.html.erb</p>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mb-4">
+    <%= link_to admin_users_path, class: "inline-flex items-center text-sm text-gray-500 hover:text-gray-700" do %>
+      <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Users
+    <% end %>
+  </div>
+
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-2xl font-bold text-gray-900">Edit User</h1>
+      <p class="mt-2 text-sm text-gray-700">Update local settings for <%= @user.full_name %></p>
+    </div>
+  </div>
+
+  <div class="mt-8">
+    <%= form_with model: [:admin, @user], local: true, class: "space-y-6" do |form| %>
+      <% if @user.errors.any? %>
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:
+              </h3>
+              <div class="mt-2 text-sm text-red-700">
+                <ul role="list" class="list-disc space-y-1 pl-5">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Okta Information (Read-Only) -->
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Okta Account Information (Read-Only)</h3>
+          <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.full_name %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Email</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.email %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Employee ID</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.employee_id || "—" %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Title</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.title || "—" %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Department</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.department || "—" %></dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-gray-500">Office Location</dt>
+              <dd class="mt-1 text-sm text-gray-900"><%= @user.office_location || "—" %></dd>
+            </div>
+          </dl>
+          <div class="mt-4 text-xs text-gray-500">
+            <svg class="inline h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            These fields are automatically synced from Okta and cannot be edited here.
+          </div>
+        </div>
+      </div>
+
+      <!-- Editable Local Settings -->
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Local Settings</h3>
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            
+            <!-- Team Assignment -->
+            <div class="sm:col-span-3">
+              <%= form.label :team_id, "Team", class: "block text-sm font-medium text-gray-700" %>
+              <%= form.select :team_id, options_from_collection_for_select(@teams, :id, :name, @user.team_id), 
+                  { prompt: "Select a team" }, 
+                  { class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" } %>
+              <p class="mt-2 text-sm text-gray-500">Override automatic team assignment from Okta</p>
+            </div>
+
+            <!-- Role -->
+            <div class="sm:col-span-3">
+              <%= form.label :role, class: "block text-sm font-medium text-gray-700" %>
+              <%= form.select :role, options_for_select([
+                ["Executive", "Executive"],
+                ["Director", "Director"], 
+                ["Manager", "Manager"],
+                ["Staff", "Staff"]
+              ], @user.role), {}, { class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" } %>
+              <p class="mt-2 text-sm text-gray-500">Override role derived from Okta title</p>
+            </div>
+
+            <!-- Admin Privileges -->
+            <% if current_user&.admin? %>
+              <div class="sm:col-span-6">
+                <div class="relative flex items-start">
+                  <div class="flex h-5 items-center">
+                    <%= form.check_box :admin, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <%= form.label :admin, "Administrator Privileges", class: "font-medium text-gray-700" %>
+                    <p class="text-gray-500">Grant admin access (overrides Okta group assignment)</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Active Status -->
+            <div class="sm:col-span-6">
+              <div class="relative flex items-start">
+                <div class="flex h-5 items-center">
+                  <%= form.check_box :active, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
+                </div>
+                <div class="ml-3 text-sm">
+                  <%= form.label :active, "Active", class: "font-medium text-gray-700" %>
+                  <p class="text-gray-500">Enable or disable user account access</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <%= link_to "Cancel", admin_users_path, class: "rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+        <%= form.submit "Update User", class: "rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      </div>
+    <% end %>
+  </div>
 </div>

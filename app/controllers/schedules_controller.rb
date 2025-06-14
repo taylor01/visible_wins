@@ -38,7 +38,7 @@ class SchedulesController < ApplicationController
     end
 
     @schedule = @user.weekly_schedules.find_or_initialize_by(week_start_date: @week_start_date)
-    @schedule_options = WeeklySchedule::SCHEDULE_OPTIONS
+    @schedule_options = WeeklySchedule.schedule_options_for_select
   end
 
   def update
@@ -57,7 +57,7 @@ class SchedulesController < ApplicationController
     if @schedule.update(schedule_params)
       redirect_to root_path, notice: "Schedule updated successfully!"
     else
-      @schedule_options = WeeklySchedule::SCHEDULE_OPTIONS
+      @schedule_options = WeeklySchedule.schedule_options_for_select
       render :edit, status: :unprocessable_entity
     end
   end

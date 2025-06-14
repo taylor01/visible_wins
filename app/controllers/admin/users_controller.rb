@@ -9,21 +9,6 @@ class Admin::UsersController < ApplicationController
   def show
   end
 
-  def new
-    @user = User.new
-    @teams = Team.all.order(:name)
-  end
-
-  def create
-    @user = User.new(user_params)
-    @teams = Team.all.order(:name)
-
-    if @user.save
-      redirect_to admin_users_path, notice: "User created successfully!"
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
 
   def edit
     @teams = Team.all.order(:name)
@@ -53,8 +38,8 @@ class Admin::UsersController < ApplicationController
   end
 
   def user_params
-    # Only allow admin role assignment if current user is admin
-    permitted_params = [ :first_name, :last_name, :email, :okta_sub, :role, :team_id, :active ]
+    # Only allow editing of local override fields (Okta fields are read-only)
+    permitted_params = [ :role, :team_id, :active ]
     permitted_params << :admin if current_user&.admin?
 
     params.require(:user).permit(permitted_params)
