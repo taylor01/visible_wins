@@ -190,8 +190,8 @@ class UserTest < ActiveSupport::TestCase
 
     ordered_users = User.by_name
     # Filter to just the test users we created
-    test_users = ordered_users.where(okta_sub: ["test_zebra", "test_apple", "test_bob_apple"])
-    
+    test_users = ordered_users.where(okta_sub: [ "test_zebra", "test_apple", "test_bob_apple" ])
+
     # Should order by last name first, then first name
     assert_equal 3, test_users.count
     assert_equal "Apple", test_users.first.last_name
