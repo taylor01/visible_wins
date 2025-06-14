@@ -176,11 +176,11 @@ class UserTest < ActiveSupport::TestCase
 
   test "by_name scope should order by last name then first name" do
     User.create!(
-      first_name: Faker::Name.first_name, last_name: "Zebra",
+      first_name: "Zoe", last_name: "Zebra",
       email: Faker::Internet.unique.email, okta_sub: "test_zebra", role: "Staff", team: @team, active: true
     )
     User.create!(
-      first_name: Faker::Name.first_name, last_name: "Apple",
+      first_name: "Charlie", last_name: "Apple",
       email: Faker::Internet.unique.email, okta_sub: "test_apple", role: "Staff", team: @team, active: true
     )
     User.create!(
@@ -189,9 +189,17 @@ class UserTest < ActiveSupport::TestCase
     )
 
     ordered_users = User.by_name
-    assert_equal "Apple", ordered_users.first.last_name
-    assert_equal "Bob", ordered_users.first.first_name
-    assert_equal "Zebra", ordered_users.last.last_name
+    # Filter to just the test users we created
+    test_users = ordered_users.where(okta_sub: ["test_zebra", "test_apple", "test_bob_apple"])
+    
+    # Should order by last name first, then first name
+    assert_equal 3, test_users.count
+    assert_equal "Apple", test_users.first.last_name
+    assert_equal "Bob", test_users.first.first_name  # Bob comes before Charlie alphabetically
+    assert_equal "Apple", test_users.second.last_name
+    assert_equal "Charlie", test_users.second.first_name
+    assert_equal "Zebra", test_users.third.last_name
+    assert_equal "Zoe", test_users.third.first_name
   end
 
   test "admins scope should return only admin users" do
